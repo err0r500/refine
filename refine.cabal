@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 62ad87401dca518652bb15e6bbffc76b2333ea62dda81a110dbbac02dd0147fc
+-- hash: c29c2da44de33b4dea22a7a55938d933f4d76cf63bc53872aaa0f139f0fa3f3c
 
 name:           refine
 version:        0.1.0.0
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/err0r500/refine/issues
 author:         Matthieu Jacquot
 maintainer:     matthieu.jacquot.tech@protonmail.ch
 copyright:      2020 Matthieu Jacquot
-license:        BSD3
+license:        GPL-3
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -27,16 +27,34 @@ source-repository head
 
 library
   exposed-modules:
-      Domain.Change
+      Adapter.Http.InsertRevision
+      Adapter.Http.Router
+      Adapter.InMemory.RevRepo
+      Adapter.Logger
+      Config.Config
+      Domain.Messages
+      Domain.Revision
       Lib
+      Usecase.InsertRevision
+      Usecase.Interactor
+      Usecase.LogicHandler
   other-modules:
       Paths_refine
   hs-source-dirs:
       src
-  default-extensions: NoImplicitPrelude
+  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving
   build-depends:
       base >=4.7 && <5
     , classy-prelude
+    , data-has
+    , http-types
+    , katip >=0.8.4.0
+    , lens >=4 && <5
+    , mtl
+    , scotty
+    , wai
+    , wai-extra
+    , warp
   default-language: Haskell2010
 
 executable refine-exe
@@ -45,12 +63,21 @@ executable refine-exe
       Paths_refine
   hs-source-dirs:
       app
-  default-extensions: NoImplicitPrelude
+  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , classy-prelude
+    , data-has
+    , http-types
+    , katip >=0.8.4.0
+    , lens >=4 && <5
+    , mtl
     , refine
+    , scotty
+    , wai
+    , wai-extra
+    , warp
   default-language: Haskell2010
 
 test-suite refine-test
@@ -61,12 +88,21 @@ test-suite refine-test
       Paths_refine
   hs-source-dirs:
       test
-  default-extensions: NoImplicitPrelude
+  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , classy-prelude
+    , data-has
     , hspec
     , hspec-discover
+    , http-types
+    , katip >=0.8.4.0
+    , lens >=4 && <5
+    , mtl
     , refine
+    , scotty
+    , wai
+    , wai-extra
+    , warp
   default-language: Haskell2010

@@ -1,7 +1,7 @@
 name:                refine
 version:             0.1.0.0
 github:              "err0r500/refine"
-license:             GPL3
+license:             GPL-3
 author:              "Matthieu Jacquot"
 maintainer:          "matthieu.jacquot.tech@protonmail.ch"
 copyright:           "2020 Matthieu Jacquot"
@@ -20,11 +20,26 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/err0r500/refine#readme>
 
 default-extensions:
+  - OverloadedStrings
   - NoImplicitPrelude
+  - ConstraintKinds
+  - FlexibleContexts
+  - RankNTypes
+  - GeneralizedNewtypeDeriving
 
 dependencies:
 - base >= 4.7 && < 5
 - classy-prelude
+- mtl
+- data-has
+- lens >= 4 && < 5
+- katip >= 0.8.4.0
+- scotty
+- wai
+- wai-extra
+- warp
+- http-types
+
 
 library:
   source-dirs: src

@@ -1,20 +1,25 @@
-module Domain.Change where
+module Domain.Revision where
 
 import           ClassyPrelude
 import           Numeric.Natural
 
-data Node = Node ParentHash Change
+data RevError
+    = ErrRevisionNotFound
+    deriving (Show, Eq)
+
+
+data Revision = Revision ParentHash Change
 newtype ParentHash = ParentHash String
 newtype Change = Change [Edit]
 data Edit = Edit Bounds String
 type Bounds = (Natural, Natural)
 
-newRevision :: String -> [Edit] -> Either String Node
+newRevision :: String -> [Edit] -> Either String Revision
 newRevision parentHash edits =
         let changes = newChange edits
         in  case changes of
                     Left  err -> Left err
-                    Right c   -> Right (Node (ParentHash parentHash) c)
+                    Right c   -> Right (Revision (ParentHash parentHash) c)
 
 newChange :: [Edit] -> Either String Change
 newChange ee =
@@ -34,8 +39,8 @@ sortedWithoutOverlapsBounds ((s0, e0) : (s1, e1) : xs) =
 
 
 -- Show instances
-instance Show Node where
-        show (Node r e) = "-" ++ show r ++ ", changes: [" ++ showEdits e ++ "]"
+instance Show Revision where
+        show (Revision r e) = "-" ++ show r ++ ", changes: [" ++ showEdits e ++ "]"
                 where showEdits = show
 
 instance Show ParentHash where
