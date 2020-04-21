@@ -9,7 +9,7 @@ module Adapter.Logger where
 import           Control.Exception
 import           Katip
 import           ClassyPrelude
-import qualified Domain.Messages               as D
+import qualified Domain.Message                as D
 import qualified Domain.Revision               as D
 
 class Show a => Loggable a where
@@ -29,8 +29,8 @@ instance Loggable D.RevError where
 
 instance Show a => Loggable ( D.Message a ) where
         type F (D.Message a) = KatipContextT IO ()
-        log' (D.ErrorMsg   mess) = $(logTM) ErrorS (showLS $ show mess)
-        log' (D.WarningMsg mess) = $(logTM) WarningS (showLS $ show mess)
+        log' (D.ErrMsg   mess) = $(logTM) ErrorS (showLS $ show mess)
+        log' (D.WarnMsg mess) = $(logTM) WarningS (showLS $ show mess)
         log' (D.InfoMsg    mess) = $(logTM) InfoS (showLS $ show mess)
         log' (D.DebugMsg   mess) = $(logTM) DebugS (showLS $ show mess)
         show' = tshow

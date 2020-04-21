@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c29c2da44de33b4dea22a7a55938d933f4d76cf63bc53872aaa0f139f0fa3f3c
+-- hash: a9b347fdd2b37b0be248834642be23a89b2dfbaeaa2453fb383694739a6c4c25
 
 name:           refine
 version:        0.1.0.0
@@ -29,10 +29,12 @@ library
   exposed-modules:
       Adapter.Http.InsertRevision
       Adapter.Http.Router
+      Adapter.InMemory.Logger
+      Adapter.InMemory.NodeRepo
       Adapter.InMemory.RevRepo
       Adapter.Logger
       Config.Config
-      Domain.Messages
+      Domain.Message
       Domain.Revision
       Lib
       Usecase.InsertRevision
@@ -84,7 +86,9 @@ test-suite refine-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      App
       BoundsSpec
+      InsertRevisionSpec
       Paths_refine
   hs-source-dirs:
       test

@@ -2,11 +2,11 @@ module BoundsSpec where
 
 import           ClassyPrelude
 import           Test.Hspec
-import           Domain.Change
+import           Domain.Revision
 
 spec :: Spec
 spec = do
-        describe "valids"
+        describe "success"
 
                 $          it "simple"
                 $          sortedWithoutOverlapsBounds [(1, 2), (3, 4), (5, 8)]
@@ -21,7 +21,7 @@ spec = do
                 `shouldBe` True
 
 
-        describe "invalids"
+        describe "failure"
                 $          it "not sorted"
                 $          sortedWithoutOverlapsBounds [(4, 4), (1, 1), (5, 5)]
                 `shouldBe` False

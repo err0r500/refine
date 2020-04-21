@@ -1,4 +1,7 @@
-module Lib (start) where
+module Lib
+        ( start
+        )
+where
 
 import           ClassyPrelude
 import qualified Network.Wai.Handler.Warp      as Warp
@@ -7,22 +10,22 @@ import qualified Config.Config                 as Config
 import qualified Adapter.Http.Router           as HttpRouter
 import qualified Adapter.Logger                as Logger
 import           Domain.Revision
-import qualified Adapter.InMemory.RevRepo      as InMem
+import qualified Adapter.InMemory.NodeRepo     as InMem
 import qualified Usecase.Interactor            as UC
 import qualified Usecase.LogicHandler          as UC
 import qualified Usecase.InsertRevision        as UC
 
-type RevisionStore = TVar InMem.RevisionStore
+type NodeStore = TVar InMem.NodeStore
 
 newtype InMemoryApp a = InMemoryApp
-    { unApp :: ReaderT RevisionStore IO a
-    } deriving (Applicative, Functor, Monad, MonadReader RevisionStore, MonadIO)
+    { unApp :: ReaderT NodeStore IO a
+    } deriving (Applicative, Functor, Monad, MonadReader NodeStore, MonadIO)
 
-run :: RevisionStore -> InMemoryApp a -> IO a
+run :: NodeStore -> InMemoryApp a -> IO a
 run state app = runReaderT (unApp app) state
 
-getFreshState :: (MonadIO m) => m RevisionStore
-getFreshState = newTVarIO $ InMem.RevisionStore mempty
+getFreshState :: (MonadIO m) => m NodeStore
+getFreshState = newTVarIO $ InMem.NodeStore mempty
 
 start :: IO ()
 start = do
@@ -34,12 +37,13 @@ start = do
         Warp.run port router
 
 interactor :: UC.Interactor InMemoryApp
-interactor =
-        UC.Interactor { UC.getNodeContentByHash_ = InMem.getRevContentByHash }
+interactor = UC.Interactor { UC.nodeRepo_ = nodeRepo }
+    where
+        nodeRepo = UC.NodeRepo InMem.insertNode InMem.getNodeContentByHash
 
 logicHandler :: UC.Interactor InMemoryApp -> UC.LogicHandler InMemoryApp
 logicHandler i = UC.LogicHandler
-        (UC.insertRev $ UC.getNodeContentByHash_ i)
+        (UC.insertRevision (UC.getNodeContentByHash_ $ UC.nodeRepo_ i)) -- insertRevision usecase with the chosen implementation of getNodeContentByHash
 
 
 instance UC.Logger InMemoryApp where

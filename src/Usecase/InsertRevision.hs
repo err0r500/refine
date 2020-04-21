@@ -1,32 +1,29 @@
 module Usecase.InsertRevision where
 
-import           ClassyPrelude
+import           ClassyPrelude           hiding ( log )
 import qualified Usecase.Interactor            as UC
+import qualified Domain.Message                as D
 import qualified Domain.Revision               as D
 
-type InsertRevision m = Monad m => Text -> m (Maybe D.RevError)
+data Err = InvalidRevision
+  | ParentNodeNotFound
+    deriving (Show, Eq)
 
--- TODO : fill the usecase
-insertRev
-        :: UC.Logger m
-        => UC.GetNodeContentByHash m
-        -> Text
-        -> m (Maybe D.RevError)
-insertRev getNodeContentByHash parentHash = do
-        mayNodeContent <- getNodeContentByHash parentHash
-        case mayNodeContent of
-          Left err -> pure $ Just err
-          Right _ -> pure $ Nothing
+type InsertRevision m = Monad m => D.Hash -> [D.Edit] -> m (Maybe Err)
 
---someFunc :: IO ()
---someFunc =
---  -- example of new change added to parent
---        let
---                n = newRevision
---                        "parent"
---                        [Edit (0, 12) "my edit 1", Edit (13, 14) "my edit 2"]
---        in  case n of
---                    Left  err -> putStrLn $ pack err
---                    Right c   -> putStrLn $ pack $ show n
-
+insertRevision :: UC.Logger m => UC.GetNodeContentByHash m -> InsertRevision m
+insertRevision getNodeContentByHash parent edits =
+        let r = D.newRevision parent edits
+        in
+                case r of
+                        Left err -> do
+                                UC.log [(D.InfoMsg err)]
+                                pure $ Just InvalidRevision
+                        Right c -> do
+                                mayNC <- getNodeContentByHash parent
+                                case mayNC of
+                                        Left err -> do
+                                                UC.log [(D.WarnMsg err)]
+                                                pure $ Just ParentNodeNotFound
+                                        Right _ -> pure $ Nothing
 

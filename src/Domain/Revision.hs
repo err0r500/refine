@@ -2,26 +2,35 @@ module Domain.Revision where
 
 import           ClassyPrelude
 import           Numeric.Natural
+import           Text.Printf
 
 data RevError
     = ErrRevisionNotFound
     deriving (Show, Eq)
 
+newtype Hash = Hash Text deriving (Eq, Ord)
 
-data Revision = Revision ParentHash Change
-newtype ParentHash = ParentHash String
+data Node = Node
+    { contentHash :: Hash
+    , content :: Text
+    } deriving (Show)
+
+instance Eq Node where
+        a == b = contentHash a == contentHash b
+
+data Revision = Revision Hash Change
 newtype Change = Change [Edit]
-data Edit = Edit Bounds String
+data Edit = Edit Bounds Text
 type Bounds = (Natural, Natural)
 
-newRevision :: String -> [Edit] -> Either String Revision
+newRevision :: Hash -> [Edit] -> Either Text Revision
 newRevision parentHash edits =
         let changes = newChange edits
         in  case changes of
                     Left  err -> Left err
-                    Right c   -> Right (Revision (ParentHash parentHash) c)
+                    Right c   -> Right (Revision parentHash c)
 
-newChange :: [Edit] -> Either String Change
+newChange :: [Edit] -> Either Text Change
 newChange ee =
         if validateEdits ee then Right (Change ee) else Left "invalid edits"
 
@@ -39,23 +48,17 @@ sortedWithoutOverlapsBounds ((s0, e0) : (s1, e1) : xs) =
 
 
 -- Show instances
-instance Show Revision where
-        show (Revision r e) = "-" ++ show r ++ ", changes: [" ++ showEdits e ++ "]"
-                where showEdits = show
+instance Show  Hash where
+        show (Hash r) = printf "root: %s" r
 
-instance Show ParentHash where
-        show (ParentHash r) = "root: " ++ show r
+instance Show Revision where
+        show (Revision r e) = printf "- %s, changes [ %s ]" (show r) (show e)
+
 
 instance Show Change where
         show (Change ee) = intercalate "," $ map show ee
 
 instance Show Edit where
         show (Edit (start, end) content) =
-                " ("
-                        ++ show start
-                        ++ ", "
-                        ++ show end
-                        ++ ", content: "
-                        ++ content
-                        ++ ") "
+                printf " ( %s:%s, content: %s ) " start end content
 

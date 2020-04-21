@@ -1,18 +1,24 @@
 module Adapter.Http.InsertRevision where
 
 import           ClassyPrelude
-import           Network.HTTP.Types             ( status200
-                                                , status400
-                                                )
+import           Network.HTTP.Types             ( status501 )
 
 import qualified Web.Scotty.Trans              as ScottyT
 import           Usecase.InsertRevision        as UC
                                                 ( InsertRevision )
 
-insertRevisionHandler :: Monad m => UC.InsertRevision m -> ScottyT.ActionT LText m ()
+insertRevisionHandler
+        :: Monad m
+        => UC.InsertRevision m
+        -> ScottyT.ActionT LText m ()
 insertRevisionHandler insertRevision = do
-        name <- ScottyT.param "name"
-        resp <- lift $ insertRevision name
+        ScottyT.status status501
+  {-
+        name   <- ScottyT.param "parenthash"
+        change <- ScottyT.param "change"
+        resp   <- lift $ insertRevision name change
         case resp of
                 Just _  -> ScottyT.status status400
                 Nothing -> ScottyT.status status200
+
+-}
