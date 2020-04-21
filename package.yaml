@@ -1,7 +1,7 @@
 name:                refine
 version:             0.1.0.0
 github:              "err0r500/refine"
-license:             BSD3
+license:             GPL3
 author:              "Matthieu Jacquot"
 maintainer:          "matthieu.jacquot.tech@protonmail.ch"
 copyright:           "2020 Matthieu Jacquot"
