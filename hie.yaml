@@ -1,0 +1,7 @@
+cradle:
+  stack:
+    - path: ./src
+      component: "collab:lib"
+    - path: ./test
+      component: "collab:collab-test"
+      

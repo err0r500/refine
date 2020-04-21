@@ -1,0 +1,72 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 62ad87401dca518652bb15e6bbffc76b2333ea62dda81a110dbbac02dd0147fc
+
+name:           refine
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/err0r500/refine#readme>
+homepage:       https://github.com/err0r500/refine#readme
+bug-reports:    https://github.com/err0r500/refine/issues
+author:         Matthieu Jacquot
+maintainer:     matthieu.jacquot.tech@protonmail.ch
+copyright:      2020 Matthieu Jacquot
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/err0r500/refine
+
+library
+  exposed-modules:
+      Domain.Change
+      Lib
+  other-modules:
+      Paths_refine
+  hs-source-dirs:
+      src
+  default-extensions: NoImplicitPrelude
+  build-depends:
+      base >=4.7 && <5
+    , classy-prelude
+  default-language: Haskell2010
+
+executable refine-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_refine
+  hs-source-dirs:
+      app
+  default-extensions: NoImplicitPrelude
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , classy-prelude
+    , refine
+  default-language: Haskell2010
+
+test-suite refine-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      BoundsSpec
+      Paths_refine
+  hs-source-dirs:
+      test
+  default-extensions: NoImplicitPrelude
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , classy-prelude
+    , hspec
+    , hspec-discover
+    , refine
+  default-language: Haskell2010
