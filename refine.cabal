@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 70e5fcbbe18c19a05cff572d89da4b926431f4937dcc50d4dce22551d9833d0e
+-- hash: 8fced8cd266156ca211d1a4163d2aeee79201524eef016969acf448837b60f9f
 
 name:           refine
 version:        0.1.0.0
@@ -89,6 +89,7 @@ test-suite refine-test
       DomainSpecs.BoundsSpec
       Lib
       UCSpecs.InsertRevisionSpec
+      Utils
       Paths_refine
   hs-source-dirs:
       test
