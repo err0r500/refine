@@ -1,4 +1,4 @@
-module App where
+module Lib where
 
 import qualified Adapter.InMemory.Logger       as InMem
 import qualified Adapter.InMemory.NodeRepo     as InMem

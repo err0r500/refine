@@ -15,12 +15,7 @@ log elemsToLog = do
         tvar <- asks DH.getter
         atomically $ do
                 state <- readTVar tvar
-                writeTVar
-                        tvar
-                        state
-                                { logs = logs state
-                                                 ++ map Adapter.show' elemsToLog
-                                }
+                writeTVar tvar state { logs = logs state ++ map Adapter.show' elemsToLog }
 
 getLogs :: Logger r m => m [Text]
 getLogs = do

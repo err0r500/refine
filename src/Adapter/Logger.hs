@@ -30,17 +30,14 @@ instance Loggable D.RevError where
 instance Show a => Loggable ( D.Message a ) where
         type F (D.Message a) = KatipContextT IO ()
         log' (D.ErrMsg   mess) = $(logTM) ErrorS (showLS $ show mess)
-        log' (D.WarnMsg mess) = $(logTM) WarningS (showLS $ show mess)
-        log' (D.InfoMsg    mess) = $(logTM) InfoS (showLS $ show mess)
-        log' (D.DebugMsg   mess) = $(logTM) DebugS (showLS $ show mess)
+        log' (D.WarnMsg  mess) = $(logTM) WarningS (showLS $ show mess)
+        log' (D.InfoMsg  mess) = $(logTM) InfoS (showLS $ show mess)
+        log' (D.DebugMsg mess) = $(logTM) DebugS (showLS $ show mess)
         show' = tshow
 
 log :: (MonadIO m, Loggable a) => [a] -> m ()
 log elemsToLog = do
-        handleScribe <- liftIO
-                $ mkHandleScribe ColorIfTerminal stdout (permitItem DebugS) V2
-        let mkLogEnv =
-                    registerScribe "stdout" handleScribe defaultScribeSettings
-                            =<< initLogEnv "refine" "prod"
+        handleScribe <- liftIO $ mkHandleScribe ColorIfTerminal stdout (permitItem DebugS) V2
+        let mkLogEnv = registerScribe "stdout" handleScribe defaultScribeSettings =<< initLogEnv "refine" "prod"
         liftIO $ Control.Exception.bracket mkLogEnv closeScribes $ \le ->
                 runKatipContextT le () mempty $ mapM_ log' elemsToLog

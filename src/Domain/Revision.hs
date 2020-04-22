@@ -31,8 +31,7 @@ newRevision parentHash edits =
                     Right c   -> Right (Revision parentHash c)
 
 newChange :: [Edit] -> Either Text Change
-newChange ee =
-        if validateEdits ee then Right (Change ee) else Left "invalid edits"
+newChange ee = if validateEdits ee then Right (Change ee) else Left "invalid edits"
 
 validateEdits :: [Edit] -> Bool
 validateEdits ee = case ee of
@@ -59,6 +58,5 @@ instance Show Change where
         show (Change ee) = intercalate "," $ map show ee
 
 instance Show Edit where
-        show (Edit (start, end) content) =
-                printf " ( %s:%s, content: %s ) " start end content
+        show (Edit (start, end) content) = printf " ( %s:%s, content: %s ) " start end content
 

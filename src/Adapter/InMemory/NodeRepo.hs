@@ -16,12 +16,7 @@ insertNode node = do
         tvar <- asks DH.getter
         atomically $ do
                 state <- readTVar tvar
-                writeTVar
-                        tvar
-                        state
-                                { nodes = insertMap (D.contentHash node) node
-                                                 $ nodes state
-                                }
+                writeTVar tvar state { nodes = insertMap (D.contentHash node) node $ nodes state }
                 pure $ Nothing
 
 

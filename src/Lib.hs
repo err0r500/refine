@@ -38,12 +38,12 @@ start = do
 
 interactor :: UC.Interactor InMemoryApp
 interactor = UC.Interactor { UC.nodeRepo_ = nodeRepo }
-    where
-        nodeRepo = UC.NodeRepo InMem.insertNode InMem.getNodeContentByHash
+        where nodeRepo = UC.NodeRepo InMem.insertNode InMem.getNodeContentByHash
 
 logicHandler :: UC.Interactor InMemoryApp -> UC.LogicHandler InMemoryApp
-logicHandler i = UC.LogicHandler
-        (UC.insertRevision (UC.getNodeContentByHash_ $ UC.nodeRepo_ i)) -- insertRevision usecase with the chosen implementation of getNodeContentByHash
+logicHandler i =
+        UC.LogicHandler -- the usecases :
+                        (UC.insertRevision (UC.getNodeContentByHash_ $ UC.nodeRepo_ i))
 
 
 instance UC.Logger InMemoryApp where

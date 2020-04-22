@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a9b347fdd2b37b0be248834642be23a89b2dfbaeaa2453fb383694739a6c4c25
+-- hash: 70e5fcbbe18c19a05cff572d89da4b926431f4937dcc50d4dce22551d9833d0e
 
 name:           refine
 version:        0.1.0.0
@@ -86,9 +86,9 @@ test-suite refine-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      App
-      BoundsSpec
-      InsertRevisionSpec
+      DomainSpecs.BoundsSpec
+      Lib
+      UCSpecs.InsertRevisionSpec
       Paths_refine
   hs-source-dirs:
       test
