@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8fced8cd266156ca211d1a4163d2aeee79201524eef016969acf448837b60f9f
+-- hash: 36557b12a9d504d17aab2e22adb864987ec7958c701620a724028d15827294a0
 
 name:           refine
 version:        0.1.0.0
@@ -44,11 +44,12 @@ library
       Paths_refine
   hs-source-dirs:
       src
-  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving
+  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving MonoLocalBinds
   build-depends:
       base >=4.7 && <5
     , classy-prelude
     , data-has
+    , exceptions >=0.10.4
     , http-types
     , katip >=0.8.4.0
     , lens >=4 && <5
@@ -65,12 +66,13 @@ executable refine-exe
       Paths_refine
   hs-source-dirs:
       app
-  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving
+  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving MonoLocalBinds
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , classy-prelude
     , data-has
+    , exceptions >=0.10.4
     , http-types
     , katip >=0.8.4.0
     , lens >=4 && <5
@@ -93,12 +95,13 @@ test-suite refine-test
       Paths_refine
   hs-source-dirs:
       test
-  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving
+  default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving MonoLocalBinds
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , classy-prelude
     , data-has
+    , exceptions >=0.10.4
     , hspec
     , hspec-discover
     , http-types

@@ -14,12 +14,13 @@ import qualified Adapter.InMemory.NodeRepo     as InMem
 import qualified Usecase.Interactor            as UC
 import qualified Usecase.LogicHandler          as UC
 import qualified Usecase.InsertRevision        as UC
+import qualified Control.Monad.Catch           as C
 
 type NodeStore = TVar InMem.NodeStore
 
 newtype InMemoryApp a = InMemoryApp
     { unApp :: ReaderT NodeStore IO a
-    } deriving (Applicative, Functor, Monad, MonadReader NodeStore, MonadIO)
+    } deriving (Applicative, Functor, Monad, C.MonadThrow, C.MonadCatch, MonadReader NodeStore, MonadIO)
 
 run :: NodeStore -> InMemoryApp a -> IO a
 run state app = runReaderT (unApp app) state

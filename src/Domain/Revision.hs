@@ -8,6 +8,7 @@ data RevError
     = ErrRevisionNotFound
     | ErrInvalidEdits
     deriving (Show, Eq)
+instance Exception RevError
 
 newtype Hash = Hash Text deriving (Eq, Ord)
 

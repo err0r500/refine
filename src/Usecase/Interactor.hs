@@ -22,3 +22,4 @@ class Monad m =>
       Logger m
     where
     log :: Logger.Loggable a => [a] -> m ()
+
