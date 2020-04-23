@@ -1,22 +1,28 @@
-module Usecase.InsertRevision where
+module Usecase.InsertRevision
+        ( insertRevision
+        , InsertRevision
+        , Err(..)
+        )
+where
 
 import           ClassyPrelude           hiding ( log )
 import qualified Usecase.Interactor            as UC
 import qualified Domain.Message                as D
+import qualified Domain.Node                   as D
 import qualified Domain.Revision               as D
 import qualified Control.Monad.Catch           as C
 
+-- public --
 data Err = InvalidRevision
   | ParentNodeNotFound
     deriving (Show, Eq)
 
-
 type InsertRevision m = Monad m => D.Hash -> [D.Edit] -> m (Maybe Err)
 
 insertRevision :: (UC.Logger m, C.MonadCatch m, Exception D.RevError) => UC.GetNodeContentByHash m -> InsertRevision m
-insertRevision getNodeContentByHash parent edits = C.catch
+insertRevision getNodeContentByHash parentHash edits = C.catch
         (do
-                _ <- uc getNodeContentByHash parent edits
+                _ <- uc getNodeContentByHash parentHash edits
                 pure Nothing
         )
         (\e -> do
@@ -25,23 +31,25 @@ insertRevision getNodeContentByHash parent edits = C.catch
         )
 
 
+
+-- private --
 uc :: (C.MonadThrow m, Exception D.RevError) => UC.GetNodeContentByHash m -> D.Hash -> [D.Edit] -> m ()
-uc getNodeContentByHash parent edits = do
-        revision         <- newRevision parent edits
-        getParentContent <- getParentContent getNodeContentByHash parent
+uc getNodeContentByHash parentHash edits = do
+        revision      <- newRevision parentHash edits
+        parentContent <- getParentContent getNodeContentByHash parentHash
         pure ()
 
 newRevision :: (C.MonadThrow m, Exception D.RevError) => D.Hash -> [D.Edit] -> m D.Revision
-newRevision parent edits = case D.newRevision parent edits of
-        Left  e        -> C.throwM e
+newRevision parentHash edits = case D.newRevision parentHash edits of
         Right revision -> pure revision
+        Left  e        -> C.throwM e
 
 getParentContent :: (C.MonadThrow m, Exception D.RevError) => UC.GetNodeContentByHash m -> D.Hash -> m Text
-getParentContent getNodeContentByHash parent = do
-        mayNC <- getNodeContentByHash parent
+getParentContent getNodeContentByHash parentHash = do
+        mayNC <- getNodeContentByHash parentHash
         case mayNC of
-                Right may -> pure may
-                Left  e   -> C.throwM e
+                Right content -> pure content
+                Left  e       -> C.throwM e
 
 handleExceptions :: (UC.Logger m, C.MonadCatch m, Exception D.RevError) => D.RevError -> m Err
 handleExceptions e = case e of

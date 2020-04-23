@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 36557b12a9d504d17aab2e22adb864987ec7958c701620a724028d15827294a0
+-- hash: bc194df7a09f929cb8e4f348d7d1548aceac4a7c8c57e448b2a99a39ee6cda73
 
 name:           refine
 version:        0.1.0.0
@@ -31,10 +31,11 @@ library
       Adapter.Http.Router
       Adapter.InMemory.Logger
       Adapter.InMemory.NodeRepo
-      Adapter.InMemory.RevRepo
+      Adapter.InMemory.RevisionRepo
       Adapter.Logger
       Config.Config
       Domain.Message
+      Domain.Node
       Domain.Revision
       Lib
       Usecase.InsertRevision
@@ -67,7 +68,7 @@ executable refine-exe
   hs-source-dirs:
       app
   default-extensions: OverloadedStrings NoImplicitPrelude ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving MonoLocalBinds
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -Wnoncanonical-monad-instances
   build-depends:
       base >=4.7 && <5
     , classy-prelude

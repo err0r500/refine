@@ -1,4 +1,3 @@
-{-# LANGUAGE MonoLocalBinds #-}
 module UCSpecs.InsertRevisionSpec
         ( spec
         )
@@ -9,6 +8,7 @@ import           Test.Hspec
 
 import           Lib
 import           Utils
+import qualified Domain.Node                   as D
 import qualified Domain.Revision               as D
 import qualified Usecase.InsertRevision        as UC
 import qualified Adapter.InMemory.NodeRepo     as InMem
@@ -20,7 +20,6 @@ ucLogic = UC.insertRevision InMem.getNodeContentByHash
 -- get the IO usecase logic
 insertRevision :: State -> UC.InsertRevision IO
 insertRevision state hash edits = run state $ ucLogic hash edits
-
 
 -- SPECS
 spec :: Spec
@@ -38,13 +37,13 @@ spec = do
                           resp `shouldBe` Nothing
 
         describe "failure cases" $ do
-                it "without parent" $ do
+                it "fails without parent" $ do
                         state <- getEmptyState
                         resp  <- insertRevision state pHash validEdits
                         resp `shouldBe` Just UC.ParentNodeNotFound
                         checkLogs state [D.ErrRevisionNotFound]
 
-                it "invalid edits" $ do
+                it "fails with invalid edits" $ do
                         state <- getEmptyState
                         resp  <- insertRevision state pHash [D.Edit (2, 1) "edit"]
                         resp `shouldBe` Just UC.InvalidRevision

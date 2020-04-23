@@ -5,22 +5,22 @@ where
 
 import           ClassyPrelude
 import qualified Network.Wai.Handler.Warp      as Warp
+import qualified Control.Monad.Catch           as Catch
 
-import qualified Config.Config                 as Config
 import qualified Adapter.Http.Router           as HttpRouter
-import qualified Adapter.Logger                as Logger
-import           Domain.Revision
 import qualified Adapter.InMemory.NodeRepo     as InMem
+import qualified Adapter.Logger                as Logger
+import qualified Config.Config                 as Config
+import qualified Usecase.InsertRevision        as UC
 import qualified Usecase.Interactor            as UC
 import qualified Usecase.LogicHandler          as UC
-import qualified Usecase.InsertRevision        as UC
-import qualified Control.Monad.Catch           as C
+
 
 type NodeStore = TVar InMem.NodeStore
 
 newtype InMemoryApp a = InMemoryApp
     { unApp :: ReaderT NodeStore IO a
-    } deriving (Applicative, Functor, Monad, C.MonadThrow, C.MonadCatch, MonadReader NodeStore, MonadIO)
+    } deriving (Applicative, Functor, Monad, Catch.MonadThrow, Catch.MonadCatch, MonadReader NodeStore, MonadIO)
 
 run :: NodeStore -> InMemoryApp a -> IO a
 run state app = runReaderT (unApp app) state

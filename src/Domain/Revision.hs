@@ -1,8 +1,9 @@
 module Domain.Revision where
 
 import           ClassyPrelude
-import           Numeric.Natural
-import           Text.Printf
+import qualified Numeric.Natural               as Nat
+import qualified Text.Printf                   as Printf
+import qualified Domain.Node                   as Domain
 
 data RevError
     = ErrRevisionNotFound
@@ -10,22 +11,12 @@ data RevError
     deriving (Show, Eq)
 instance Exception RevError
 
-newtype Hash = Hash Text deriving (Eq, Ord)
-
-data Node = Node
-    { contentHash :: Hash
-    , content :: Text
-    } deriving (Show)
-
-instance Eq Node where
-        a == b = contentHash a == contentHash b
-
-data Revision = Revision Hash Change
+data Revision = Revision Domain.Hash Change
 newtype Change = Change [Edit]
 data Edit = Edit Bounds Text
-type Bounds = (Natural, Natural)
+type Bounds = (Nat.Natural, Nat.Natural)
 
-newRevision :: Hash -> [Edit] -> Either RevError Revision
+newRevision :: Domain.Hash -> [Edit] -> Either RevError Revision
 newRevision parentHash edits =
         let changes = newChange edits
         in  case changes of
@@ -47,18 +38,14 @@ sortedWithoutOverlapsBounds ((s0, e0) : (s1, e1) : xs) =
         e0 < s1 && s0 <= e0 && sortedWithoutOverlapsBounds ((s1, e1) : xs)
 
 
-
 -- Show instances
-instance Show  Hash where
-        show (Hash r) = printf "root: %s" r
-
 instance Show Revision where
-        show (Revision r e) = printf "- %s, changes [ %s ]" (show r) (show e)
+        show (Revision r e) = Printf.printf "- %s, changes [ %s ]" (show r) (show e)
 
 
 instance Show Change where
         show (Change ee) = intercalate "," $ map show ee
 
 instance Show Edit where
-        show (Edit (start, end) content) = printf " ( %s:%s, content: %s ) " start end content
+        show (Edit (start, end) content) = Printf.printf " ( %s:%s, content: %s ) " start end content
 

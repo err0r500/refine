@@ -2,6 +2,7 @@ module Adapter.InMemory.NodeRepo where
 
 import           ClassyPrelude
 import qualified Data.Has                      as DH
+import qualified Domain.Node                   as D
 import qualified Domain.Revision               as D
 
 newtype NodeStore = NodeStore
@@ -17,12 +18,12 @@ insertNode node = do
         atomically $ do
                 state <- readTVar tvar
                 writeTVar tvar state { nodes = insertMap (D.contentHash node) node $ nodes state }
-                pure $ Nothing
+                pure Nothing
 
 
 getNodeContentByHash :: InMemory r m => D.Hash -> m (Either D.RevError Text)
 getNodeContentByHash h = do
-        mayNode <- nodeSearch (\n -> (D.contentHash n) == h)
+        mayNode <- nodeSearch (\n -> D.contentHash n == h)
         case mayNode of
                 Just found -> pure $ Right (D.content found)
                 Nothing    -> pure $ Left D.ErrRevisionNotFound
