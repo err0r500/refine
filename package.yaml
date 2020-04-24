@@ -20,8 +20,9 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/err0r500/refine#readme>
 
 default-extensions:
-  - OverloadedStrings
   - NoImplicitPrelude
+  - OverloadedStrings
+  - TypeSynonymInstances
   - ConstraintKinds
   - FlexibleContexts
   - RankNTypes
@@ -29,18 +30,18 @@ default-extensions:
   - MonoLocalBinds
 
 dependencies:
-- base >= 4.7 && < 5
-- classy-prelude
-- mtl
-- data-has
-- lens >= 4 && < 5
-- katip >= 0.8.4.0
-- scotty
-- wai
-- wai-extra
-- warp
-- http-types
-- exceptions >= 0.10.4
+  - base >= 4.7 && < 5
+  - classy-prelude
+  - mtl
+  - data-has
+  - lens >= 4 && < 5
+  - katip >= 0.8.4.0
+  - scotty
+  - wai
+  - wai-extra
+  - warp
+  - http-types
+  - exceptions >= 0.10.4
 
 library:
   source-dirs: src

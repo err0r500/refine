@@ -11,9 +11,9 @@ data Node = Node
     } deriving (Show)
 
 instance Eq Node where
-        a == b = contentHash a == contentHash b
+  a == b = contentHash a == contentHash b
 
-instance Show  Hash where
-        show (Hash r) = Printf.printf "root: %s" r
+instance Show Hash where
+  show (Hash r) = Printf.printf "root: %s" r
 
 

@@ -1,6 +1,6 @@
 module Lib
-        ( start
-        )
+  ( start
+  )
 where
 
 import           ClassyPrelude
@@ -18,12 +18,12 @@ import qualified Usecase.LogicHandler          as UC
 
 start :: IO ()
 start = do
-        putStrLn "== Refine =="
-        state  <- freshState
-        router <- HttpRouter.start (logicHandler interactor) $ run state
-        port   <- Config.getIntFromEnv "PORT" 3000
-        putStrLn $ "starting server on port: " ++ tshow port
-        Warp.run port router
+  putStrLn "== Refine =="
+  state  <- freshState
+  router <- HttpRouter.start (logicHandler interactor) $ run state
+  port   <- Config.getIntFromEnv "PORT" 3000
+  putStrLn $ "starting server on port: " ++ tshow port
+  Warp.run port router
 
 
 type State = (TVar InMem.NodeStore, TVar InMem.RevisionStore)
@@ -38,22 +38,21 @@ run state app = runReaderT (unApp app) state
 
 freshState :: (MonadIO m) => m State
 freshState = do
-        nodes     <- newTVarIO $ InMem.NodeStore mempty
-        revisions <- newTVarIO $ InMem.RevisionStore mempty
-        return (nodes, revisions)
+  nodes     <- newTVarIO $ InMem.NodeStore mempty
+  revisions <- newTVarIO $ InMem.RevisionStore mempty
+  return (nodes, revisions)
 
 interactor :: UC.Interactor InMemoryApp
 interactor = UC.Interactor { UC.nodeRepo_ = nodeRepo, UC.revisionRepo_ = revisionRepo }
-    where
-        nodeRepo     = UC.NodeRepo InMem.insertNode InMem.getNodeContentByHash
-        revisionRepo = UC.RevisionRepo InMem.insertRevision
+ where
+  nodeRepo     = UC.NodeRepo InMem.insertNode InMem.getNodeContentByHash
+  revisionRepo = UC.RevisionRepo InMem.insertRevision
 
 logicHandler :: UC.Interactor InMemoryApp -> UC.LogicHandler InMemoryApp
 logicHandler i =
-        UC.LogicHandler -- the usecases :
-                        (UC.insertRevision (UC.getNodeContentByHash_ $ UC.nodeRepo_ i))
-
+  -- the usecases :
+  UC.LogicHandler (UC.insertRevision (UC.getNodeContentByHash_ $ UC.nodeRepo_ i))
 
 instance UC.Logger InMemoryApp where
-        log = Logger.log
+  log = Logger.log
 

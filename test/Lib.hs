@@ -19,4 +19,4 @@ run :: State -> InMemoryApp a -> IO a
 run state app = runReaderT (unApp app) state
 
 instance Logger InMemoryApp where
-        log = InMem.log
+  log = InMem.log

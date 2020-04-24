@@ -13,9 +13,9 @@ type InMemory r m = (Has.Has (TVar RevisionStore) r, MonadReader r m, MonadIO m)
 
 insertRevision :: InMemory r m => Text -> D.Revision -> m (Maybe D.RevError)
 insertRevision id revision = do
-        tvar <- asks Has.getter
-        atomically $ do
-                state <- readTVar tvar
-                writeTVar tvar state { revisions = insertMap id revision $ revisions state }
-                pure Nothing
+  tvar <- asks Has.getter
+  atomically $ do
+    state <- readTVar tvar
+    writeTVar tvar state { revisions = insertMap id revision $ revisions state }
+    pure Nothing
 

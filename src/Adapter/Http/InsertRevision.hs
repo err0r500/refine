@@ -9,7 +9,7 @@ import           Usecase.InsertRevision        as UC
 
 insertRevision :: Monad m => UC.InsertRevision m -> ScottyT.ActionT LText m ()
 insertRevision insertRevision = do
-        ScottyT.status HttpTypes.status501
+  ScottyT.status HttpTypes.status501
   {-
         name   <- ScottyT.param "parenthash"
         change <- ScottyT.param "change"
