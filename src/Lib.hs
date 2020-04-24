@@ -3,9 +3,10 @@ module Lib
   )
 where
 
-import           ClassyPrelude
+import           RIO
+import           System.IO
+
 import qualified Network.Wai.Handler.Warp      as Warp
-import qualified Control.Monad.Catch           as Catch
 
 import qualified Adapter.Http.Router           as HttpRouter
 import qualified Adapter.InMemory.NodeRepo     as InMem
@@ -22,19 +23,19 @@ start = do
   state  <- freshState
   router <- HttpRouter.start (logicHandler interactor) $ run state
   port   <- Config.getIntFromEnv "PORT" 3000
-  putStrLn $ "starting server on port: " ++ tshow port
+  putStrLn $ "starting server on port: " ++ show port
   Warp.run port router
 
 
 type State = (TVar InMem.NodeStore, TVar InMem.RevisionStore)
 
 newtype InMemoryApp a = InMemoryApp
-    { unApp :: ReaderT State IO a
-    } deriving (Functor, Applicative, Monad, Catch.MonadThrow, Catch.MonadCatch, MonadReader State, MonadIO)
+    { unApp :: RIO State a
+    } deriving (Functor, Applicative, Monad, MonadUnliftIO, MonadThrow, MonadReader State, MonadIO)
 
 
 run :: State -> InMemoryApp a -> IO a
-run state app = runReaderT (unApp app) state
+run state app = runRIO state (unApp app)
 
 freshState :: (MonadIO m) => m State
 freshState = do

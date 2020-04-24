@@ -1,6 +1,7 @@
 module Domain.Revision where
 
-import           ClassyPrelude
+import           RIO
+import qualified RIO.Text                      as T
 import qualified Numeric.Natural               as Nat
 import qualified Text.Printf                   as Printf
 import qualified Domain.Node                   as Domain
@@ -44,7 +45,7 @@ instance Show Revision where
 
 
 instance Show Change where
-  show (Change ee) = intercalate "," $ map show ee
+  show (Change ee) = show $ T.intercalate "," $ map tshow ee
 
 instance Show Edit where
   show (Edit (start, end) content) = Printf.printf " ( %s:%s, content: %s ) " start end content

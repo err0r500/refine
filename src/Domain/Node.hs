@@ -1,13 +1,13 @@
 module Domain.Node where
 
-import           ClassyPrelude
+import           RIO
 import qualified Text.Printf                   as Printf
 
 newtype Hash = Hash Text deriving (Eq, Ord)
 
 data Node = Node
-    { contentHash :: Hash
-    , content :: Text
+    { contentHash :: !Hash
+    , content :: !Text
     } deriving (Show)
 
 instance Eq Node where

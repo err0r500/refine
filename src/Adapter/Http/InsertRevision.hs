@@ -1,6 +1,6 @@
 module Adapter.Http.InsertRevision where
 
-import           ClassyPrelude
+import           RIO
 import qualified Network.HTTP.Types            as HttpTypes
                                                 ( status501 )
 import qualified Web.Scotty.Trans              as ScottyT

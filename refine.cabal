@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 04353e4dd7a515a05fc1f799720bdbbf8fdaf5ad820664cbd67c2371916338bf
+-- hash: b876fd2fefefe4d66f175b5ac047190add128e44bceb5159ed87a17b5b71fc30
 
 name:           refine
 version:        0.1.0.0
@@ -48,13 +48,10 @@ library
   default-extensions: NoImplicitPrelude OverloadedStrings TypeSynonymInstances ConstraintKinds FlexibleContexts RankNTypes GeneralizedNewtypeDeriving MonoLocalBinds
   build-depends:
       base >=4.7 && <5
-    , classy-prelude
     , data-has
-    , exceptions >=0.10.4
     , http-types
     , katip >=0.8.4.0
-    , lens >=4 && <5
-    , mtl
+    , rio >=0.1.15.0 && <0.2
     , scotty
     , wai
     , wai-extra
@@ -71,14 +68,11 @@ executable refine-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -Wnoncanonical-monad-instances
   build-depends:
       base >=4.7 && <5
-    , classy-prelude
     , data-has
-    , exceptions >=0.10.4
     , http-types
     , katip >=0.8.4.0
-    , lens >=4 && <5
-    , mtl
     , refine
+    , rio >=0.1.15.0 && <0.2
     , scotty
     , wai
     , wai-extra
@@ -100,16 +94,13 @@ test-suite refine-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
-    , classy-prelude
     , data-has
-    , exceptions >=0.10.4
     , hspec
     , hspec-discover
     , http-types
     , katip >=0.8.4.0
-    , lens >=4 && <5
-    , mtl
     , refine
+    , rio >=0.1.15.0 && <0.2
     , scotty
     , wai
     , wai-extra

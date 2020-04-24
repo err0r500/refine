@@ -3,7 +3,7 @@ module UCSpecs.InsertRevisionSpec
   )
 where
 
-import           ClassyPrelude
+import           RIO
 import           Test.Hspec
 
 import           Lib

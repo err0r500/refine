@@ -1,6 +1,6 @@
 module Adapter.InMemory.Logger where
 
-import           ClassyPrelude
+import           RIO
 import qualified Data.Has                      as Has
 import qualified Adapter.Logger                as Logger
 

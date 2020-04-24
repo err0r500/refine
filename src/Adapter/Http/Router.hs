@@ -1,6 +1,6 @@
 module Adapter.Http.Router where
 
-import           ClassyPrelude
+import           RIO
 import qualified Network.HTTP.Types            as HttpTypes
                                                 ( status200
                                                 , status404

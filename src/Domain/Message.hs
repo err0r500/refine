@@ -2,7 +2,7 @@
 
 module Domain.Message where
 
-import           ClassyPrelude
+import           RIO
 
 data Message a where
   ErrMsg ::Show a => a -> Message a

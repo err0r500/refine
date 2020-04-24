@@ -6,7 +6,7 @@
 
 module Adapter.Logger where
 
-import           ClassyPrelude
+import           RIO
 import qualified Control.Exception             as Exception
 import qualified Katip                         as K
 
@@ -39,5 +39,7 @@ instance Show a => Loggable ( D.Message a ) where
 log :: (MonadIO m, Loggable a) => [a] -> m ()
 log elemsToLog = do
   handleScribe <- liftIO $ K.mkHandleScribe K.ColorIfTerminal stdout (K.permitItem K.DebugS) K.V2
-  let mkLogEnv = K.registerScribe "stdout" handleScribe K.defaultScribeSettings =<< K.initLogEnv "refine" "prod"
-  liftIO $ Exception.bracket mkLogEnv K.closeScribes $ \le -> K.runKatipContextT le () mempty $ mapM_ log' elemsToLog
+  let mkLogEnv = K.registerScribe "stdout" handleScribe K.defaultScribeSettings
+        =<< K.initLogEnv "refine" "prod"
+  liftIO $ Exception.bracket mkLogEnv K.closeScribes $ \le ->
+    K.runKatipContextT le () mempty $ mapM_ log' elemsToLog

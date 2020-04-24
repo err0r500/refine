@@ -1,6 +1,6 @@
 module DomainSpecs.BoundsSpec where
 
-import           ClassyPrelude
+import           RIO
 import           Test.Hspec
 import           Domain.Revision
 

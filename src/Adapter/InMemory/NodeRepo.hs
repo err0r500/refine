@@ -1,6 +1,7 @@
 module Adapter.InMemory.NodeRepo where
 
-import           ClassyPrelude
+import           RIO
+import qualified RIO.Map                       as Map
 import qualified Data.Has                      as DH
 import qualified Domain.Node                   as D
 import qualified Domain.Revision               as D
@@ -17,7 +18,7 @@ insertNode node = do
   tvar <- asks DH.getter
   atomically $ do
     state <- readTVar tvar
-    writeTVar tvar state { nodes = insertMap (D.contentHash node) node $ nodes state }
+    writeTVar tvar state { nodes = Map.insert (D.contentHash node) node $ nodes state }
     pure Nothing
 
 
@@ -34,7 +35,7 @@ nodeSearch filter_ = do
   tvar <- asks DH.getter
   atomically $ do
     state <- readTVar tvar
-    case filter filter_ $ toList (nodes state) of
+    case filter filter_ $ map snd $ Map.toList (nodes state) of
       []      -> pure Nothing
       (x : _) -> pure (Just x)
 

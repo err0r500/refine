@@ -1,6 +1,7 @@
 module Adapter.InMemory.RevisionRepo where
 
-import           ClassyPrelude
+import           RIO
+import           RIO.Map                       as Map
 import qualified Data.Has                      as Has
 import qualified Domain.Revision               as D
 
@@ -16,6 +17,6 @@ insertRevision id revision = do
   tvar <- asks Has.getter
   atomically $ do
     state <- readTVar tvar
-    writeTVar tvar state { revisions = insertMap id revision $ revisions state }
+    writeTVar tvar state { revisions = Map.insert id revision $ revisions state }
     pure Nothing
 

@@ -31,17 +31,16 @@ default-extensions:
 
 dependencies:
   - base >= 4.7 && < 5
-  - classy-prelude
-  - mtl
+  - rio >= 0.1.15.0 && < 0.2
   - data-has
-  - lens >= 4 && < 5
+  # the logger
   - katip >= 0.8.4.0
+  # the http server, may be replaced by servant
   - scotty
   - wai
   - wai-extra
   - warp
   - http-types
-  - exceptions >= 0.10.4
 
 library:
   source-dirs: src
