@@ -11,12 +11,11 @@ import           Domain.Revision               as D
 
 type State = (TVar InMem.NodeStore, TVar InMem.Logs)
 
-newtype InMemoryApp a = InMemoryApp
-    { unApp :: RIO State a
-    } deriving (Functor, Applicative, Monad, MonadUnliftIO, MonadThrow, MonadReader State, MonadIO)
+newtype App a = App ( RIO State a )
+  deriving (Functor, Applicative, Monad, MonadUnliftIO, MonadThrow, MonadReader State, MonadIO)
 
-run :: State -> InMemoryApp a -> IO a
-run state app = runRIO state (unApp app)
+run :: State -> App a -> IO a
+run state (App app) = runRIO state app
 
-instance Logger InMemoryApp where
+instance Logger App where
   log = InMem.log

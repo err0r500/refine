@@ -1,3 +1,4 @@
+{-# LANGUAGE TypeSynonymInstances #-}
 module Lib
   ( start
   )
@@ -29,13 +30,11 @@ start = do
 
 type State = (TVar InMem.NodeStore, TVar InMem.RevisionStore)
 
-newtype InMemoryApp a = InMemoryApp
-    { unApp :: RIO State a
-    } deriving (Functor, Applicative, Monad, MonadUnliftIO, MonadThrow, MonadReader State, MonadIO)
+newtype App a = App ( RIO State a )
+  deriving (Functor, Applicative, Monad, MonadUnliftIO, MonadThrow, MonadReader State, MonadIO)
 
-
-run :: State -> InMemoryApp a -> IO a
-run state app = runRIO state (unApp app)
+run :: State -> App a -> IO a
+run state (App app) = runRIO state app
 
 freshState :: (MonadIO m) => m State
 freshState = do
@@ -43,17 +42,17 @@ freshState = do
   revisions <- newTVarIO $ InMem.RevisionStore mempty
   return (nodes, revisions)
 
-interactor :: UC.Interactor InMemoryApp
+interactor :: UC.Interactor App
 interactor = UC.Interactor { UC.nodeRepo_ = nodeRepo, UC.revisionRepo_ = revisionRepo }
  where
   nodeRepo     = UC.NodeRepo InMem.insertNode InMem.getNodeContentByHash
   revisionRepo = UC.RevisionRepo InMem.insertRevision
 
-logicHandler :: UC.Interactor InMemoryApp -> UC.LogicHandler InMemoryApp
+logicHandler :: UC.Interactor App -> UC.LogicHandler App
 logicHandler i =
   -- the usecases :
   UC.LogicHandler (UC.insertRevision (UC.getNodeContentByHash_ $ UC.nodeRepo_ i))
 
-instance UC.Logger InMemoryApp where
+instance UC.Logger App where
   log = Logger.log
 

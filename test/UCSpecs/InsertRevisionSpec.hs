@@ -14,7 +14,7 @@ import qualified Usecase.InsertRevision        as UC
 import qualified Adapter.InMemory.NodeRepo     as InMem
 
 -- apply the functions to get the usecase logic
-ucLogic :: UC.InsertRevision InMemoryApp
+ucLogic :: UC.InsertRevision App
 ucLogic = UC.insertRevision InMem.getNodeContentByHash
 
 -- get the IO usecase logic
