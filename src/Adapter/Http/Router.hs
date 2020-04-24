@@ -15,7 +15,11 @@ import qualified Usecase.Interactor            as UC
 import qualified Usecase.LogicHandler          as UC
 import qualified Adapter.Http.InsertRevision   as HttpAdapter
 
-start :: (MonadIO m, UC.Logger m) => UC.LogicHandler m -> (m Wai.Response -> IO Wai.Response) -> IO Wai.Application
+start
+  :: (MonadIO m, UC.Logger m)
+  => UC.LogicHandler m
+  -> (m Wai.Response -> IO Wai.Response)
+  -> IO Wai.Application
 start logicHandler runner = ScottyTrans.scottyAppT
   runner
   (do

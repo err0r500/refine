@@ -19,10 +19,13 @@ data Err = InvalidRevision
 
 type InsertRevision m = Monad m => D.Hash -> [D.Edit] -> m (Maybe Err)
 
-insertRevision :: (UC.Logger m, C.MonadCatch m, Exception D.RevError) => UC.GetNodeContentByHash m -> InsertRevision m
+insertRevision
+  :: (UC.Logger m, C.MonadCatch m, Exception D.RevError)
+  => UC.GetNodeContentByHash m
+  -> InsertRevision m
 insertRevision getNodeContentByHash parentHash edits = C.catch
   (do
-    _ <- uc getNodeContentByHash parentHash edits
+    uc getNodeContentByHash parentHash edits
     pure Nothing
   )
   (\e -> do
@@ -33,7 +36,12 @@ insertRevision getNodeContentByHash parentHash edits = C.catch
 
 
 -- private --
-uc :: (C.MonadThrow m, Exception D.RevError) => UC.GetNodeContentByHash m -> D.Hash -> [D.Edit] -> m ()
+uc
+  :: (C.MonadThrow m, Exception D.RevError)
+  => UC.GetNodeContentByHash m
+  -> D.Hash
+  -> [D.Edit]
+  -> m ()
 uc getNodeContentByHash parentHash edits = do
   revision      <- newRevision parentHash edits
   parentContent <- getParentContent getNodeContentByHash parentHash
@@ -44,7 +52,8 @@ newRevision parentHash edits = case D.newRevision parentHash edits of
   Right revision -> pure revision
   Left  e        -> C.throwM e
 
-getParentContent :: (C.MonadThrow m, Exception D.RevError) => UC.GetNodeContentByHash m -> D.Hash -> m Text
+getParentContent
+  :: (C.MonadThrow m, Exception D.RevError) => UC.GetNodeContentByHash m -> D.Hash -> m Text
 getParentContent getNodeContentByHash parentHash = do
   mayNC <- getNodeContentByHash parentHash
   case mayNC of
