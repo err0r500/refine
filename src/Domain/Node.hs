@@ -6,8 +6,8 @@ import qualified Text.Printf                   as Printf
 newtype Hash = Hash Text deriving (Eq, Ord)
 
 data Node = Node
-    { contentHash :: !Hash
-    , content :: !Text
+    { contentHash :: {-# UNPACK #-} !Hash
+    , content :: {-# UNPACK #-} !Text
     } deriving (Show)
 
 instance Eq Node where

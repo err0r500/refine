@@ -5,7 +5,7 @@ module Usecase.InsertRevision
   )
 where
 
-import RIO
+import           RIO
 import qualified Usecase.Interactor            as UC
 import qualified Domain.Message                as D
 import qualified Domain.Node                   as D
@@ -33,18 +33,24 @@ insertRevision getNodeContentByHash parentHash edits = catch
   )
 
 
-
--- private --
 uc
-  :: (MonadThrow m, Exception D.RevError)
-  => UC.GetNodeContentByHash m
-  -> D.Hash
-  -> [D.Edit]
-  -> m ()
+  :: (MonadThrow m, Exception D.RevError) => UC.GetNodeContentByHash m -> D.Hash -> [D.Edit] -> m ()
 uc getNodeContentByHash parentHash edits = do
   revision      <- newRevision parentHash edits
   parentContent <- getParentContent getNodeContentByHash parentHash
   pure ()
+
+handleExceptions :: (UC.Logger m, MonadUnliftIO m, Exception D.RevError) => D.RevError -> m Err
+handleExceptions e = case e of
+  D.ErrRevisionNotFound -> do
+    UC.log [D.WarnMsg e]
+    pure ParentNodeNotFound
+  D.ErrInvalidEdits -> do
+    UC.log [D.InfoMsg e]
+    pure InvalidRevision
+
+
+
 
 newRevision :: (MonadThrow m, Exception D.RevError) => D.Hash -> [D.Edit] -> m D.Revision
 newRevision parentHash edits = case D.newRevision parentHash edits of
@@ -59,11 +65,3 @@ getParentContent getNodeContentByHash parentHash = do
     Right content -> pure content
     Left  e       -> throwM e
 
-handleExceptions :: (UC.Logger m, MonadUnliftIO m, Exception D.RevError) => D.RevError -> m Err
-handleExceptions e = case e of
-  D.ErrRevisionNotFound -> do
-    UC.log [D.WarnMsg e]
-    pure ParentNodeNotFound
-  D.ErrInvalidEdits -> do
-    UC.log [D.InfoMsg e]
-    pure InvalidRevision

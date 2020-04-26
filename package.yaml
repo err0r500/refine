@@ -33,8 +33,10 @@ dependencies:
   - base >= 4.7 && < 5
   - rio >= 0.1.15.0 && < 0.2
   - data-has
+
   # the logger
   - katip >= 0.8.4.0
+
   # the http server, may be replaced by servant
   - scotty
   - wai
